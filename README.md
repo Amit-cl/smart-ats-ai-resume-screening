@@ -1,98 +1,147 @@
-# Smart ATS – AI-Powered Applicant Tracking System
 
-Beginner-friendly full-stack Smart ATS project.
+# Smart ATS - AI Resume Screening System
 
-## Folders
+Smart ATS is a full-stack web application that I am building to make resume screening easier for recruiters.
 
-```txt
-Frontend  -> React + Vite + Tailwind
-Backend   -> Node.js + Express + MongoDB
-```
+The basic idea is that a recruiter can create a job, upload resumes for that job, and the system will compare each resume with the job description. After comparison, it gives an ATS score, matched skills, missing skills, a short summary, and a recommendation.
 
-## Core Flow
+I started this project because resume screening is a common problem in recruitment. When many candidates apply for one job, checking every resume manually takes time. This project tries to reduce that manual work by using AI for the first level of screening.
 
-Recruiter Login / Signup  
-→ Create Job  
-→ Open Job Details  
-→ Upload single/bulk PDF resumes inside selected job  
-→ Backend extracts resume text using pdf-parse  
-→ Groq AI compares resume with job description  
-→ MongoDB saves candidate with jobId  
-→ Frontend shows job-wise candidate ranking  
-→ Recruiter marks candidate as Review / Shortlisted / Rejected / Interview
+## Current Status
 
-## MVP Features
+This project is currently in progress.
 
-- Login / Signup
-- Dashboard
-- Jobs
-- Create Job
-- Job Details
-- Inline resume upload inside Job Details
-- Upload progress/status feedback
-- Candidates page with job/status filters
-- Candidate Profile
-- Recruiter Profile
-- Light / Dark mode
-- Clear candidates only for selected job
-- Groq AI scoring with fallback logic
+Right now, I have mainly worked on the backend part. The backend includes authentication, job management, candidate management, resume upload, PDF text extraction, MongoDB models, and AI-based resume matching.
 
-## Backend Setup
+Frontend work will be improved step by step after the backend flow is stable.
 
-```bash
-cd Backend
-npm install
-```
-
-Create `.env` inside `Backend/`:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/smart_ats
-JWT_SECRET=mysecret123
-CLIENT_URL=http://localhost:5173
-GROQ_API_KEY=your_groq_key_here
-GROQ_MODEL=llama-3.3-70b-versatile
-```
-
-Run backend:
-
-```bash
-npm run dev
-```
-
-Expected:
+## Main Project Flow
 
 ```txt
-Server running on port 5000
-MongoDB connected: 127.0.0.1
-```
+Recruiter creates a job
+→ Recruiter uploads resume PDF for that job
+→ Backend extracts text from the resume
+→ AI compares resume text with job description
+→ ATS score is generated
+→ Candidate is saved under that job
+→ Recruiter can review, shortlist, reject, or move candidate to interview
+````
 
-## Frontend Setup
+## API Overview
 
-```bash
-cd Frontend
-npm install
-```
-
-Create `.env` inside `Frontend/`:
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-Run frontend:
-
-```bash
-npm run dev
-```
-
-Open:
+### Auth APIs
 
 ```txt
-http://localhost:5173
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
 ```
 
-## Interview Line
+### Job APIs
 
-I designed the database in a job-centric way. Every uploaded candidate resume is linked with a specific jobId, so candidate ranking is generated separately for each job opening and old candidate data does not mix with new comparisons.
+```txt
+POST   /api/jobs
+GET    /api/jobs
+GET    /api/jobs/:id
+PUT    /api/jobs/:id
+DELETE /api/jobs/:id
+```
+
+### Candidate APIs
+
+```txt
+POST /api/jobs/:jobId/upload-resumes
+GET  /api/jobs/:jobId/candidates
+GET  /api/candidates
+GET  /api/candidates/:id
+PUT  /api/candidates/:id/status
+```
+
+## Database Collections
+
+### User
+
+Stores recruiter account details.
+
+```js
+{
+  name,
+  email,
+  password,
+  role
+}
+```
+
+### Job
+
+Stores job details created by recruiter.
+
+```js
+{
+  recruiterId,
+  title,
+  department,
+  requiredSkills,
+  experience,
+  location,
+  employmentType,
+  salaryRange,
+  jobDescription,
+  status
+}
+```
+
+### Candidate
+
+Stores resume analysis and candidate details.
+
+```js
+{
+  jobId,
+  recruiterId,
+  candidateName,
+  email,
+  phone,
+  resumeText,
+  atsScore,
+  matchedSkills,
+  missingSkills,
+  aiSummary,
+  recommendation,
+  status
+}
+```
+
+## What I Learned
+
+While working on this project, I learned and practiced:
+
+* How to structure a MERN-style full-stack project
+* How authentication works using JWT
+* How to design MongoDB schemas
+* How to upload files using Multer
+* How to extract text from PDF resumes
+* How to connect an AI API with backend logic
+* How to store candidates job-wise using jobId
+* How to build APIs for real recruiter workflows
+
+## Future Work
+
+* Complete frontend UI
+* Connect frontend with all backend APIs
+* Add candidate profile page
+* Add resume preview
+* Add better filters and sorting
+* Add dashboard analytics
+* Add deployment
+* Improve AI scoring logic
+
+## Note
+
+This project is still under development. I am building it step by step, starting with the backend workflow first and then improving the frontend and user experience.
+
+## Author
+
+Amit Kumar
+
+
